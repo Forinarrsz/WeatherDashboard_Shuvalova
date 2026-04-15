@@ -25,7 +25,25 @@ class WeatherViewModel : ViewModel() {
                 isLoading = true,
                 error = null
             )
+                    try {
+                        val temperature = repository.fetchTemperature()
+                        _weatherState.value = _weatherState.value.copy(temperature = temperature)
+
+                        val humidity = repository.fetchHumidity()
+                        _weatherState.value = _weatherState.value.copy(humidity = humidity)
+
+                        val windSpeed = repository.fetchWindSpeed()
+                        _weatherState.value = _weatherState.value.copy(windSpeed = windSpeed)
+
+                        _weatherState.value = _weatherState.value.copy(isLoading = false)
+                    } catch (e: Exception) {
+                        _weatherState.value = _weatherState.value.copy(
+                            isLoading = false,
+                            error = "Ошибка загрузки: ${e.message}"
+                        )
+                    }
+                }
+            }
+
 
         }
-    }
-}
