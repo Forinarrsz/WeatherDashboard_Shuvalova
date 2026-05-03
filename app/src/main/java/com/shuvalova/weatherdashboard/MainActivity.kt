@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.shuvalova.weatherdashboard.ui.theme.WeatherDashboardTheme
 import com.shuvalova.weatherdashboard.viewmodel.WeatherViewModel
+import androidx.compose.material3.OutlinedButton
 
 
 class MainActivity : ComponentActivity() {
@@ -102,6 +103,12 @@ fun WeatherDashboardScreen(
         ) {
             Text(text = if (weatherState.isLoading) "Loading..." else "🔄 Refresh Weather")
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = { viewModel.toggleErrorSimulation() }
+        ) {
+            Text(text = "⚠️ Simulate Error")
+        }
         if (weatherState.loadingProgess.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -110,9 +117,6 @@ fun WeatherDashboardScreen(
                 color = MaterialTheme.colorScheme.secondary
             )
         }
-
-
-
         if (weatherState.error != null) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
