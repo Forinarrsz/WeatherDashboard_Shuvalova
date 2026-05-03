@@ -12,6 +12,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 class WeatherViewModel : ViewModel() {
     private val repository = WeatherRepository()
 
@@ -21,7 +23,10 @@ class WeatherViewModel : ViewModel() {
 
     init {
         loadWeatherData()
+        startAutoRefresh()
+        // viewModelScope автоматически отменит корутины при onCleared()
     }
+
     /**
      * Демонстрация работы диспетчеров:
      *
@@ -84,4 +89,17 @@ class WeatherViewModel : ViewModel() {
     fun toggleErrorSimulation() {
         repository.toggleErrorSimulation()
     }
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            flow {
+                while (true) {
+                    delay(10000)
+                    emit(Unit)
+                }
+            }.collect {
+                loadWeatherData()
+            }
+        }
+    }
+
 }

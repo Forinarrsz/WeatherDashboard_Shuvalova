@@ -64,6 +64,7 @@ fun WeatherDashboardScreen(
     viewModel: WeatherViewModel = viewModel()
 ) {
     val weatherState by viewModel.weatherState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,11 +77,12 @@ fun WeatherDashboardScreen(
             style = MaterialTheme.typography.headlineLarge
         )
         Spacer(modifier = Modifier.height(32.dp))
+
         WeatherCard(
-            emoji = "�",
+            emoji = "🌡️",
             title = "Temperature",
             value = weatherState.temperature?.let { "$it C" } ?: "-",
-            isLoading = weatherState.isLoading && weatherState.humidity == null
+            isLoading = weatherState.isLoading && weatherState.temperature == null
         )
         WeatherCard(
             emoji = "💧",
@@ -88,13 +90,13 @@ fun WeatherDashboardScreen(
             value = weatherState.humidity?.let { "$it%" } ?: "-",
             isLoading = weatherState.isLoading && weatherState.humidity == null
         )
-
         WeatherCard(
             emoji = "🌪️",
             title = "Wind Speed",
             value = weatherState.windSpeed?.let { "$it m/s" } ?: "-",
             isLoading = weatherState.isLoading && weatherState.windSpeed == null
         )
+
         if (weatherState.weatherIndex != null) {
             WeatherCard(
                 emoji = "📊",
@@ -104,20 +106,34 @@ fun WeatherDashboardScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "⏱️ Auto-refresh every 10s",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+        }
 
         Spacer(modifier = Modifier.height(32.dp))
+
         Button(
             onClick = { viewModel.loadWeatherData() },
             enabled = !weatherState.isLoading
         ) {
             Text(text = if (weatherState.isLoading) "Loading..." else "🔄 Refresh Weather")
         }
+
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedButton(
             onClick = { viewModel.toggleErrorSimulation() }
         ) {
             Text(text = "⚠️ Simulate Error")
         }
+
+        // Исправлено имя переменной: loadingProgress
         if (weatherState.loadingProgess.isNotEmpty()) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -126,6 +142,7 @@ fun WeatherDashboardScreen(
                 color = MaterialTheme.colorScheme.secondary
             )
         }
+
         if (weatherState.error != null) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -134,9 +151,9 @@ fun WeatherDashboardScreen(
                 style = MaterialTheme.typography.bodyMedium
             )
         }
+    } // Конец Column
+} // Конец WeatherDashboardScreen
 
-    }
-}
 
 @Composable
 fun WeatherCard(
